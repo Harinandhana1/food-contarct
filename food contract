@@ -1,0 +1,36 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract FoodPurchaseContract {
+    address public restaurant;
+    mapping(address => uint256) public orderAmount;
+
+    event FoodPurchased(address indexed buyer, uint256 amount);
+
+    constructor(address _restaurant) {
+        restaurant = _restaurant;
+    }
+
+    function purchaseFood(uint256 _amount) external payable {
+        // Ensure the buyer sends the correct amount of Ether
+
+        // Ensure the buyer is not the restaurant
+        require(msg.sender != restaurant, "Restaurant cannot purchase its own food");
+
+        // Ensure the order amount is greater than zero
+        assert(_amount > 200); // minum purchase is 200 for parcel
+
+        // Update order amount for the buyer
+        orderAmount[msg.sender] += _amount;
+
+        // Emit event for the successful purchase
+        emit FoodPurchased(msg.sender, _amount);
+
+        if (_amount <= 200 || (_amount + orderAmount[msg.sender]) > 1000) {
+            revert("Maximum order cannot be more than 1000 for each person ");
+        }
+
+        
+
+}
+}
